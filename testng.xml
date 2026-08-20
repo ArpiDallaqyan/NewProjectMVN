@@ -1,8 +1,13 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
-<suite name="Calculator Suite">
+<suite name="Amount Classification">
     <test name="Package Tests">
+        <groups>
+            <run>
+                <include name="equivalence"/>
+            </run>
+        </groups>
         <packages>
-            <package name="com.example․testing"/>
+            <package name="atm.System.Testing"/>
         </packages>
     </test>
 </suite>
