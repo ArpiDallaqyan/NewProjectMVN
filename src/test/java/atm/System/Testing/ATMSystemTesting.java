@@ -17,13 +17,13 @@ public class ATMSystemTesting {
         System.out.println("Card ejected");
     }
 
-    @Test(groups = {"equivalence"}, dependsOnMethods = {"testMaximumValidAmount()"}, priority = 1)
+    @Test(groups = {"equivalence"}, dependsOnMethods = {"testTooLowAmount()"}, priority = 1)
     public void testValidAmount() {
         boolean actual = ATMSystem.testValidAmount(15000);
         Assert.assertTrue(actual, "Valid Amount");
     }
 
-    @Test(groups = {"equivalence"})
+    @Test(groups = {"equivalence"}, priority =  0)
     public void testTooLowAmount() {
         boolean actual = ATMSystem.tooLowAmount(50);
         Assert.assertTrue(actual, "Too Low Amount");
@@ -47,7 +47,7 @@ public class ATMSystemTesting {
         Assert.assertTrue(actual);
     }
 
-    @Test(groups = {"boundary"}, priority = 0)
+    @Test(groups = {"boundary"})
     public void testMaximumValidAmount() {
         boolean actual = ATMSystem.maximalValidAmount(20000);
         Assert.assertTrue(actual);
