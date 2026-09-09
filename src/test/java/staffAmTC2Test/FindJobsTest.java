@@ -29,8 +29,7 @@ public class FindJobsTest {
         jobsAnnouncementPage.searchForJob("IT");
         jobsAnnouncementPage.clickToSearchButton();
         Assert.assertTrue(jobsAnnouncementPage.isClearFiltersVisible(), "Clear filters button should be visible");
-        Assert.assertTrue(jobsAnnouncementPage.isDataLoaded(), "Job openings header should be visible");
-        jobsAnnouncementPage.clearFilters();
+        Assert.assertTrue(jobsAnnouncementPage.isDataLoaded(), "First job's name should be changed");
         jobsAnnouncementPage.searchForJob("HR");
         jobsAnnouncementPage.pressEnter();
         Assert.assertTrue(jobsAnnouncementPage.isClearFiltersVisible(), "Clear filters button should be visible after HR search");
@@ -39,7 +38,6 @@ public class FindJobsTest {
         jobsAnnouncementPage.scrollToTop();
         jobsAnnouncementPage.clickToSearchButton();
         Assert.assertTrue(jobsAnnouncementPage.isNoJobsMessageVisible(), "'No jobs' message should be displayed");
-        jobsAnnouncementPage.clearFilters();
         jobsAnnouncementPage.searchForJob("");
         jobsAnnouncementPage.pressEnter();
         Assert.assertTrue(jobsAnnouncementPage.isClearFiltersInvisible(), "Clear filters button should be invisible when filters cleared");

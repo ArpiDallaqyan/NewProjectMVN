@@ -11,11 +11,12 @@ public class JobsAnnouncementPage {
     private By searchPlaceholderLoc = By.xpath("//input[@placeholder='Enter keywords...']");
     private By searchButtonLog = By.xpath("//div[text()='Search']");
     private By clearFiltersLoc = By.xpath("//div[text()='Clear filters']");
-    private By currentJobsOpeningsTextLoc = By.xpath("//h1[text()='Current Job Openings']");
     private By noJobsMessageLoc =
             By.xpath("//*[contains(text(), 'No jobs') or contains(text()," +
                     " 'Your search returned no results. Please try using different keywords.')]");
     private By cookieAcceptButton = (By.xpath("//div[contains(text(), 'We use cookies')]"));
+    private By jobTitleText = By.xpath("//div[@id='ai-results-anchor']" +
+            "//following-sibling::div//a[@target]//div");
 
 
     public JobsAnnouncementPage(WebDriver driver) {
@@ -24,12 +25,10 @@ public class JobsAnnouncementPage {
     }
 
     public void searchForJob(String key) {
-        WebElement searchInput = wait.until(ExpectedConditions.visibilityOfElementLocated(searchPlaceholderLoc));
+        WebElement searchInput = wait.until(ExpectedConditions.elementToBeClickable(searchPlaceholderLoc));
         searchInput.sendKeys(Keys.CONTROL + "a");
         searchInput.sendKeys(Keys.BACK_SPACE);
-        if (!key.isEmpty()) {
-            searchInput.sendKeys(key);
-        }
+        searchInput.sendKeys(key);
 
     }
     public void pressEnter() {
@@ -38,13 +37,8 @@ public class JobsAnnouncementPage {
     }
 
     public void clickToSearchButton() {
-        WebElement searchBtn = wait.until(ExpectedConditions.presenceOfElementLocated(searchButtonLog));
-        try {
-            wait.until(ExpectedConditions.elementToBeClickable(searchBtn)).click();
-        } catch (ElementClickInterceptedException e) {
-            JavascriptExecutor js = (JavascriptExecutor) driver;
-            js.executeScript("arguments[0].click();", searchBtn);
-        }
+        scrollToElement(searchButtonLog);
+        wait.until(ExpectedConditions.elementToBeClickable(searchButtonLog)).click();
     }
     public void scrollToSearchInput() {
         scrollToElement(searchPlaceholderLoc);
@@ -72,7 +66,7 @@ public class JobsAnnouncementPage {
         js.executeScript("window.scrollTo({top: 0, behavior: 'instant'});");
     }
 
-    public void scrollToElement(By locator) {
+    private void scrollToElement(By locator) {
         WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", element);
@@ -85,17 +79,18 @@ public class JobsAnnouncementPage {
 
         }
     }
+    public String getText(){
+        return (wait.until(ExpectedConditions.visibilityOfElementLocated(jobTitleText))
+                .getText());
 
-    public boolean isDataLoaded() {
-        try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(currentJobsOpeningsTextLoc));
-            return true;
-        } catch (TimeoutException e) {
-            return false;
-        }
     }
 
-    public boolean isNoJobsMessageVisible(){
+    public boolean isDataLoaded() {
+        return wait.until(ExpectedConditions.invisibilityOfElementWithText(jobTitleText, getText()));
+
+    }
+
+    public boolean isNoJobsMessageVisible() {
         try{
             wait.until(ExpectedConditions.visibilityOfElementLocated(noJobsMessageLoc));
             return true;
@@ -103,6 +98,7 @@ public class JobsAnnouncementPage {
             return false;
         }
     }
+
 
     public void clearFilters(){
         wait.until(ExpectedConditions.visibilityOfElementLocated(clearFiltersLoc)).click();
