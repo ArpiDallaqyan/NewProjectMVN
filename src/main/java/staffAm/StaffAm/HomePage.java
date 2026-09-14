@@ -1,4 +1,4 @@
-package StaffAm;
+package staffAm.StaffAm;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -7,15 +7,18 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import staffAm.BaseClass;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class HomePage {
-    private WebDriver driver;
-    private WebDriverWait wait;
+public class HomePage extends BaseClass {
+
+    public HomePage(WebDriver driver) {
+        super(driver);
+    }
 
     @BeforeMethod
     public void openPage(String url) {
@@ -34,11 +37,6 @@ public class HomePage {
     private By searchButton = By.xpath("//img[@alt='search-icon']");
     private By cookieAcceptButton = By.xpath("//button[@aria-label='close']");
 
-    public HomePage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-    }
 
     public void clickOnSwitchButton() {
         wait.until(ExpectedConditions.elementToBeClickable(switchToStandartPageButtonLoc)).click();
