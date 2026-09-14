@@ -1,13 +1,13 @@
-package staffAm_TC2;
+package staffAm.staffAm_TC2;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import staffAm.BaseClass;
+
 import java.time.Duration;
 
-public class JobsAnnouncementPage {
-    private WebDriver driver;
-    private WebDriverWait wait;
+public class JobsAnnouncementPage extends BaseClass {
     private By searchPlaceholderLoc = By.xpath("//input[@placeholder='Enter keywords...']");
     private By searchButtonLog = By.xpath("//div[text()='Search']");
     private By clearFiltersLoc = By.xpath("//div[text()='Clear filters']");
@@ -20,8 +20,7 @@ public class JobsAnnouncementPage {
 
 
     public JobsAnnouncementPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        super(driver);
     }
 
     public void searchForJob(String key) {

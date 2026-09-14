@@ -1,47 +1,55 @@
-package staffAmJobs;
+package staffAm.staffAmJobs;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import staffAm.BaseClass;
+import staffAm.businessPage.JobAnnouncement;
+
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 
 
-public class JobsResultsPage {
-    private WebDriver driver;
-    private WebDriverWait wait;
+public class JobsResultsPage extends BaseClass {
     private By cookieAcceptButton = (By.xpath("//div[contains(text(), 'We use cookies')]"));
     private By jobs = By.xpath("//img[@alt='left-icon']/ancestor::div[3]");
-    private By expectedLocation = By.xpath("//img[contains(@src, 'location')]/following::div[@dir='auto'][1]");
-    private By expectedJobTitle = By.xpath("//h1[@role='heading']");
-    private By expectedCompanyName = By.xpath("//a[contains(@href, '/company/')]" +
-            "//div[@dir='auto' and contains(@style, 'font-weight: bold')] ");
-    private By expectedDate = By.xpath("//img[contains(@src, 'calendar')" +
+    private By location = By.xpath("//img[contains(@src, 'location')]/following::div[@dir='auto'][1]");
+    private By jobTitle = By.xpath("//h1[@role='heading']");
+    private By companyName = By.xpath("//div[@id='ai-results-anchor'" +
+            "]/following-sibling::div//a[contains(@href, '/company/')]/div[@dir='auto']");
+    private By date = By.xpath("//img[contains(@src, 'calendar')" +
             " or contains(@alt, 'calendar')]/ancestor::div[2]");
     private By viewMoreBtn = By.xpath(".//*[contains(text(),'View more')]");
 
     public JobsResultsPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        super(driver);
+    }
+
+    public JobAnnouncement getJobAnnouncementDetails(){
+        String jobTitle = getJobTitle();
+        String companyName = getCompanyName();
+        String location = getLocation();
+        String date = getDate();
+        return new JobAnnouncement(jobTitle, companyName, location, date);
     }
 
     public String getJobTitle(){
-        return (wait.until(ExpectedConditions.visibilityOfElementLocated(expectedJobTitle))
+        return (wait.until(ExpectedConditions.visibilityOfElementLocated(jobTitle))
                 .getAttribute("textContent"));
     }
     public String getCompanyName(){
-        return (wait.until(ExpectedConditions.visibilityOfElementLocated(expectedCompanyName))
+        return (wait.until(ExpectedConditions.visibilityOfElementLocated(companyName))
                 .getAttribute("textContent"));
     }
     public String getLocation(){
-        return (wait.until(ExpectedConditions.visibilityOfElementLocated(expectedLocation))
+        return (wait.until(ExpectedConditions.visibilityOfElementLocated(location))
                 .getAttribute("textContent"));
 
     }
     public String getDate(){
-        return (wait.until(ExpectedConditions.visibilityOfElementLocated(expectedDate))
+        return (wait.until(ExpectedConditions.visibilityOfElementLocated(date))
                 .getAttribute("textContent"));
 
     }

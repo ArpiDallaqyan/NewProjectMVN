@@ -1,7 +1,7 @@
-package StaffAmTest;
+package staffAmTest.StaffAmTest;
 
-import StaffAm.HomePage;
-import StaffAm.JobResultPage;
+import staffAm.StaffAm.HomePage;
+import staffAm.StaffAm.JobResultPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.Test;
