@@ -2,12 +2,9 @@ package staffAm.staffAm_TC2;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import staffAm.BaseClass;
+import staffAm.BasePage;
 
-import java.time.Duration;
-
-public class JobsAnnouncementPage extends BaseClass {
+public class JobsAnnouncementPage extends BasePage {
     private By searchPlaceholderLoc = By.xpath("//input[@placeholder='Enter keywords...']");
     private By searchButtonLog = By.xpath("//div[text()='Search']");
     private By clearFiltersLoc = By.xpath("//div[text()='Clear filters']");

@@ -1,16 +1,31 @@
 package staffAm;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class BaseClass {
+public abstract class BasePage {
     protected WebDriver driver;
     protected WebDriverWait wait;
-    public BaseClass(WebDriver driver) {
-        this.driver = driver;
+    protected WebDriverWait shortWait;
+    protected By cookieAcceptButton = (By.xpath("//div[contains(text(), 'We use cookies')]"));
 
+    public BasePage(WebDriver driver) {
+        this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        this.shortWait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        PageFactory.initElements(driver, this);
+    }
+
+    public void acceptCookies() {
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(cookieAcceptButton)).click();
+        } catch (Exception e) {
+            return;
+        }
     }
 }

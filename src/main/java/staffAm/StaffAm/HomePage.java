@@ -4,17 +4,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import staffAm.BaseClass;
+import staffAm.BasePage;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class HomePage extends BaseClass {
+public class HomePage extends BasePage {
 
     public HomePage(WebDriver driver) {
         super(driver);
