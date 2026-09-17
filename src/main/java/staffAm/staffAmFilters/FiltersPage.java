@@ -1,36 +1,25 @@
 package staffAm.staffAmFilters;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import staffAm.BaseClass;
-
+import org.testng.annotations.DataProvider;
+import staffAm.BasePage;
 import java.time.Duration;
 import java.util.List;
-import java.util.Random;
 
-public class FiltersPage extends BaseClass {
-    private List<By> jobCategory = List.of(By.xpath(
-            "//div[text()='Job category']/following-sibling::div[not(@tabindex='0')]"));
-    private List<By> jobSpecialTaf = List.of(By.xpath
-            ("//div[text()='Job special tag']/following-sibling::div[not(@tabindex='0')]"));
-    private List<By> specialistLevel = List.of(By.xpath
-            ("//div[text()='Specialist level']/following-sibling::div[not(@tabindex='0')]"));
-    private By cookieAcceptButton = (By.xpath("//div[contains(text(), 'We use cookies')]"));
+public class FiltersPage extends BasePage {
+
     private By jobsTitles = By.xpath("//div[@id='ai-results-anchor']//following-sibling::div//a[@target]//div");
+    private By noJobsMessage =  By.xpath("//*[contains(text(), 'No jobs') or contains(text(), 'no results')]");
 
 
     public FiltersPage(WebDriver driver) {
         super(driver);
     }
 
-    public void selectJobCategory(){
-        Random randomCategory = new Random();
-        By randomLocator = jobCategory.get(randomCategory.nextInt(jobCategory.size()));
-        wait.until(ExpectedConditions.elementToBeClickable(randomLocator)).click();
-    }
-
-    public By getCategorySiblingsLocator(String categoryHeadName, String categoryFilter) {
+    private By getCategorySiblingsLocator(String categoryHeadName, String categoryFilter) {
         String xpath = String.format("//div[text()='%s']/following-sibling::div[not(@tabindex='0')]" +
                 "//span[text()='%s']//span", categoryHeadName, categoryFilter);
         return By.xpath(xpath);
@@ -38,11 +27,11 @@ public class FiltersPage extends BaseClass {
 
     public void clickToElement(By locator) {
         WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-        JavascriptExecutor executor = (JavascriptExecutor) driver;
-        executor.executeScript("arguments[0].click();", element);
+        new Actions(driver).scrollToElement(element).perform();
+        wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
 
-    public By getViewMoreLocator(String sectionHeader) {
+    private By getViewMoreLocator(String sectionHeader) {
         String xpath = String.format("//div[text()='%s']/following-sibling::div[@tabindex='0']", sectionHeader);
         return By.xpath(xpath);
     }
@@ -50,12 +39,11 @@ public class FiltersPage extends BaseClass {
     public void clickViewMoreIfExists(String sectionHeader) {
         By viewMoreLoc = getViewMoreLocator(sectionHeader);
         try {
-            WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(2));
             WebElement element = shortWait.until(ExpectedConditions.presenceOfElementLocated(viewMoreLoc));
-            JavascriptExecutor js = (JavascriptExecutor) driver;
-            js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
-            js.executeScript("arguments[0].click();", element);
+            new Actions(driver).scrollToElement(element).perform();
+            shortWait.until(ExpectedConditions.elementToBeClickable(viewMoreLoc)).click();
         } catch (TimeoutException e) {
+            return;
         }
     }
 
@@ -64,15 +52,28 @@ public class FiltersPage extends BaseClass {
         clickToElement(filterLoc);
     }
 
-    public String getText(By locator) {
-        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-        return element.getAttribute("textContent").replaceAll("[^0-9]", "");
+    @DataProvider(name = "JobsFiltersData")
+    public static Object[][] getCategoryFilterData() {
+        return new Object[][] {
+                {"Job category", "Banking/credit"},
+                {"Job special tag", "Fresh graduates"},
+                {"Specialist level", "Student"},
+                {"Job salary", "Mentioned"},
+                {"Job types", "Full time"},
+                {"Job terms", "Other"},
+                {"By cities", "Yerevan"}
+        };
+    }
 
+    public String getReplacedText(By locator) {
+        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+        String countOfElements = element.getAttribute("textContent").replaceAll("[^0-9]", "");
+        return countOfElements;
     }
 
     public String getOptionCountText(String categoryName, String categoryFilter) {
         By locator = getCategorySiblingsLocator(categoryName, categoryFilter);
-        return getText(locator);
+        return getReplacedText(locator);
     }
 
     public String getSizeOfJobs(){
@@ -80,17 +81,22 @@ public class FiltersPage extends BaseClass {
         return String.valueOf(jobs.size());
     }
 
+    public boolean isNoJobsMessageDisplayedIfEmpty() {
+        List<WebElement> jobs = driver.findElements(jobsTitles);
+        if (jobs.isEmpty()) {
+            try {
+                WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(3));
+                return shortWait.until(ExpectedConditions.visibilityOfElementLocated(noJobsMessage)).isDisplayed();
+            } catch (TimeoutException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
     public void waitForJobsToRefresh() {
         wait.until(ExpectedConditions.refreshed(
                 ExpectedConditions.visibilityOfAllElementsLocatedBy(jobsTitles)
         ));
-    }
-
-    public void acceptCookies() {
-        try {
-            driver.findElement(cookieAcceptButton).click();
-        } catch (Exception e) {
-
-        }
     }
 }
