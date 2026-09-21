@@ -6,13 +6,23 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.DataProvider;
 import staffAm.BasePage;
+import staffAm.businessPage.JobAnnouncement;
+
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FiltersPage extends BasePage {
 
     private By jobsTitles = By.xpath("//div[@id='ai-results-anchor']//following-sibling::div//a[@target]//div");
     private By noJobsMessage =  By.xpath("//*[contains(text(), 'No jobs') or contains(text(), 'no results')]");
+    private By location = By.xpath("//img[contains(@src, 'location')]/following::div[@dir='auto'][1]");
+    private By jobTitle = By.xpath("//h1[@role='heading']");
+    private By companyName = By.xpath("//div[@id='ai-results-anchor'" +
+            "]/following-sibling::div//a[contains(@href, '/company/')]/div[@dir='auto']");
+    private By date = By.xpath("//img[contains(@src, 'calendar')" +
+            " or contains(@alt, 'calendar')]/ancestor::div[2]");
+    private By jobCardContainer = By.xpath("//img[@alt='left-icon']/ancestor::div[3]");
 
 
     public FiltersPage(WebDriver driver) {
@@ -36,32 +46,32 @@ public class FiltersPage extends BasePage {
         return By.xpath(xpath);
     }
 
-    public void clickViewMoreIfExists(String sectionHeader) {
+    public FiltersPage clickViewMoreIfExists(String sectionHeader) {
         By viewMoreLoc = getViewMoreLocator(sectionHeader);
         try {
             WebElement element = shortWait.until(ExpectedConditions.presenceOfElementLocated(viewMoreLoc));
             new Actions(driver).scrollToElement(element).perform();
             shortWait.until(ExpectedConditions.elementToBeClickable(viewMoreLoc)).click();
         } catch (TimeoutException e) {
-            return;
         }
+        return this;
     }
 
-    public void selectFilterItem(String categoryHeadName, String categoryFilter) {
+    public FiltersPage selectFilterItem(String categoryHeadName, String categoryFilter) {
         By filterLoc = getCategorySiblingsLocator(categoryHeadName, categoryFilter);
         clickToElement(filterLoc);
+        return this;
     }
 
     @DataProvider(name = "JobsFiltersData")
     public static Object[][] getCategoryFilterData() {
         return new Object[][] {
-                {"Job category", "Banking/credit"},
+                {"Job category", "Legal"},
                 {"Job special tag", "Fresh graduates"},
                 {"Specialist level", "Student"},
-                {"Job salary", "Mentioned"},
-                {"Job types", "Full time"},
-                {"Job terms", "Other"},
-                {"By cities", "Yerevan"}
+                {"Job types", "Training"},
+                {"Job terms", "Freelance"},
+                {"By cities", "Kapan"}
         };
     }
 
@@ -77,6 +87,7 @@ public class FiltersPage extends BasePage {
     }
 
     public String getSizeOfJobs(){
+        wait.until(ExpectedConditions.visibilityOfElementLocated(jobsTitles));
         List<WebElement> jobs = driver.findElements(jobsTitles);
         return String.valueOf(jobs.size());
     }
@@ -94,9 +105,29 @@ public class FiltersPage extends BasePage {
         return false;
     }
 
-    public void waitForJobsToRefresh() {
+    public FiltersPage waitForJobsToRefresh() {
         wait.until(ExpectedConditions.refreshed(
                 ExpectedConditions.visibilityOfAllElementsLocatedBy(jobsTitles)
         ));
+        return this;
+    }
+
+
+    public List<JobAnnouncement> getJobAnnouncementsDetails() {
+        List<WebElement> cards = driver.findElements(jobCardContainer);
+
+        List<JobAnnouncement> announcements = new ArrayList<>();
+
+        for (WebElement card : cards) {
+            String titleText = card.findElement(jobTitle).getText();
+            String companyText = card.findElement(companyName).getText();
+            String locationText = card.findElement(location).getText();
+            String dateText = card.findElement(date).getText();
+
+            announcements.add(new JobAnnouncement(titleText, companyText, locationText, dateText));
+        }
+
+        return announcements;
     }
 }
+

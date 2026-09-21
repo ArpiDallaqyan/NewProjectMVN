@@ -6,17 +6,21 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import staffAm.BasePage;
 
-public class Homepage extends BasePage {
+public class HomepageNew extends BasePage {
 
     @FindBy(xpath = "//div[text()='Jobs']")
     private WebElement jobsButton;
 
-    public Homepage(WebDriver driver) {
+    public HomepageNew(WebDriver driver) {
         super(driver);
     }
 
-    public void clickJobsButton() {
-        wait.until(ExpectedConditions.elementToBeClickable(jobsButton)).click();
+    public HomepageNew openPage() {
+        driver.get("https://staff.am");
+        return this;
     }
-
+    public FiltersPage clickJobsButton() {
+        wait.until(ExpectedConditions.elementToBeClickable(jobsButton)).click();
+        return new FiltersPage(driver);
+    }
 }
