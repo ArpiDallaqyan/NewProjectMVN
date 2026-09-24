@@ -82,7 +82,7 @@ public class FiltersPage extends BasePage {
 
     public String getJobDetailValueText(FiltersGroupName filterGroup) {
         By locator = getJobDetailsFilterLocator(filterGroup);
-        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
         new Actions(driver).scrollToElement(element).perform();
         wait.until(ExpectedConditions.visibilityOf(element));
         return element.getText().trim();
@@ -114,17 +114,12 @@ public class FiltersPage extends BasePage {
         };
     }
 
-    public boolean isNoJobsMessageDisplayedIfEmpty() {
-        List<WebElement> jobs = driver.findElements(jobsTitles);
-        if (jobs.isEmpty()) {
-            try {
-                WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(3));
-                return shortWait.until(ExpectedConditions.visibilityOfElementLocated(noJobsMessage)).isDisplayed();
-            } catch (TimeoutException e) {
-                return false;
-            }
+    public boolean isNoJobsMessageDisplayedWhenEmpty() {
+        try {
+            return shortWait.until(ExpectedConditions.visibilityOfElementLocated(noJobsMessage)).isDisplayed();
+        } catch (TimeoutException e) {
+            return false;
         }
-        return false;
     }
 
     public FiltersPage waitForJobsToRefresh() {

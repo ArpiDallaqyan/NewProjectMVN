@@ -26,7 +26,7 @@ public class FiltersPageTest extends BaseTest {
                 .clickViewMoreIfExists(headName)
                 .selectFilterItem(headName, filterName);
         filtersPage.waitForJobsToRefresh();
-        if (!filtersPage.isNoJobsMessageDisplayedIfEmpty()) {
+        if (!filtersPage.isNoJobsMessageDisplayedWhenEmpty()) {
             filtersPage.clickFirstJob();
             boolean isFilterValid = filtersPage.isFilterCorrectInJobDetails(filterGroup, filterName);
             Assert.assertTrue(isFilterValid,
