@@ -31,6 +31,22 @@ public class JobAnnouncement {
         this.date = date;
     }
 
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
