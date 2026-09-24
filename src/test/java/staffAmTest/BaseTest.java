@@ -5,17 +5,19 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import staffAm.driver.Driver;
 
-import java.time.Duration;
+import java.util.Properties;
 
 public class BaseTest {
 
         protected WebDriver driver;
+        private Properties properties;
 
         @BeforeMethod
         public void setUp() {
-            driver = Driver.getDriverEdge();
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-            driver.get("https://staff.am/");
+            properties = Driver.initProperties();
+            driver = Driver.initDriver(properties, "browser");
+
+            driver.get(properties.getProperty("url"));
         }
 
         @AfterMethod

@@ -15,7 +15,7 @@ import java.util.List;
 public class FiltersPage extends BasePage {
 
     private By jobsTitles = By.xpath("//div[@id='ai-results-anchor']//following-sibling::div//a[@target]//div");
-    private By noJobsMessage =  By.xpath("//*[contains(text(), 'No jobs') or contains(text(), 'no results')]");
+    private By noJobsMessage = By.xpath("//*[contains(text(), 'No jobs') or contains(text(), 'no results')]");
     private By location = By.xpath("//img[contains(@src, 'location')]/following::div[@dir='auto'][1]");
     private By jobTitle = By.xpath("//h1[@role='heading']");
     private By companyName = By.xpath("//div[@id='ai-results-anchor'" +
@@ -24,14 +24,17 @@ public class FiltersPage extends BasePage {
             " or contains(@alt, 'calendar')]/ancestor::div[2]");
     private By jobCardContainer = By.xpath("//img[@alt='left-icon']/ancestor::div[3]");
 
+    String jobDetailsFiltersLocText = "//div[normalize-space()='%s']/following-sibling::*[1]";
+    String viewMoreDynamicLocText = "//div[text()='%s']/following-sibling::div[@tabindex='0']";
+    String categorySiblingsLocText = "//div[text()='%s']/following-sibling::div[not(@tabindex='0')]//span[text()='%s']//span";
+
 
     public FiltersPage(WebDriver driver) {
         super(driver);
     }
 
     private By getCategorySiblingsLocator(String categoryHeadName, String categoryFilter) {
-        String xpath = String.format("//div[text()='%s']/following-sibling::div[not(@tabindex='0')]" +
-                "//span[text()='%s']//span", categoryHeadName, categoryFilter);
+        String xpath = String.format(categorySiblingsLocText, categoryHeadName, categoryFilter);
         return By.xpath(xpath);
     }
 
@@ -42,7 +45,7 @@ public class FiltersPage extends BasePage {
     }
 
     private By getViewMoreLocator(String sectionHeader) {
-        String xpath = String.format("//div[text()='%s']/following-sibling::div[@tabindex='0']", sectionHeader);
+        String xpath = String.format(viewMoreDynamicLocText, sectionHeader);
         return By.xpath(xpath);
     }
 
@@ -57,6 +60,45 @@ public class FiltersPage extends BasePage {
         return this;
     }
 
+    public FiltersPage clickFirstJob() {
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(jobsTitles));
+        List<WebElement> jobs = driver.findElements(jobsTitles);
+        if (!jobs.isEmpty()) {
+            String originalWindow = driver.getWindowHandle();
+            WebElement firstJob = jobs.get(0);
+            new Actions(driver).scrollToElement(firstJob).perform();
+            firstJob.click();
+            for (String windowHandle : driver.getWindowHandles()) {
+                if (!originalWindow.contentEquals(windowHandle)) {
+                    driver.switchTo().window(windowHandle);
+                    break;
+                }
+            }
+        } else {
+            throw new NoSuchElementException("No jobs found for the selected filter");
+        }
+        return this;
+    }
+
+    public String getJobDetailValueText(FiltersGroupName filterGroup) {
+        By locator = getJobDetailsFilterLocator(filterGroup);
+        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+        new Actions(driver).scrollToElement(element).perform();
+        wait.until(ExpectedConditions.visibilityOf(element));
+        return element.getText().trim();
+    }
+
+    public boolean isFilterCorrectInJobDetails(FiltersGroupName filterGroup, String expectedFilterValue) {
+        String actualDetailText = getJobDetailValueText(filterGroup);
+        return actualDetailText.toLowerCase().contains(expectedFilterValue.toLowerCase());
+    }
+
+    private By getJobDetailsFilterLocator(FiltersGroupName filterGroup) {
+        String label = filterGroup.getNameInJobsDetailsPage();
+        String xpath = String.format(jobDetailsFiltersLocText, label);
+        return By.xpath(xpath);
+    }
+
     public FiltersPage selectFilterItem(String categoryHeadName, String categoryFilter) {
         By filterLoc = getCategorySiblingsLocator(categoryHeadName, categoryFilter);
         clickToElement(filterLoc);
@@ -65,31 +107,11 @@ public class FiltersPage extends BasePage {
 
     @DataProvider(name = "JobsFiltersData")
     public static Object[][] getCategoryFilterData() {
-        return new Object[][] {
-                {"Job category", "Legal"},
-                {"Job special tag", "Fresh graduates"},
-                {"Specialist level", "Student"},
-                {"Job types", "Training"},
-                {"Job terms", "Freelance"},
-                {"By cities", "Kapan"}
+        return new Object[][]{
+                {FiltersGroupName.JOB_CATEGORY, "Legal"},
+                {FiltersGroupName.SPECIALIST_LEVEL, "Student"},
+                {FiltersGroupName.JOB_TERMS, "Freelance"}
         };
-    }
-
-    public String getReplacedText(By locator) {
-        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-        String countOfElements = element.getAttribute("textContent").replaceAll("[^0-9]", "");
-        return countOfElements;
-    }
-
-    public String getOptionCountText(String categoryName, String categoryFilter) {
-        By locator = getCategorySiblingsLocator(categoryName, categoryFilter);
-        return getReplacedText(locator);
-    }
-
-    public String getSizeOfJobs(){
-        wait.until(ExpectedConditions.visibilityOfElementLocated(jobsTitles));
-        List<WebElement> jobs = driver.findElements(jobsTitles);
-        return String.valueOf(jobs.size());
     }
 
     public boolean isNoJobsMessageDisplayedIfEmpty() {

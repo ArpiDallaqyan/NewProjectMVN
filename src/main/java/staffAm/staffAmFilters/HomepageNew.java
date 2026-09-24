@@ -8,19 +8,10 @@ import staffAm.BasePage;
 
 public class HomepageNew extends BasePage {
 
-    @FindBy(xpath = "//div[text()='Jobs']")
-    private WebElement jobsButton;
 
     public HomepageNew(WebDriver driver) {
         super(driver);
     }
 
-    public HomepageNew openPage() {
-        driver.get("https://staff.am");
-        return this;
-    }
-    public FiltersPage clickJobsButton() {
-        wait.until(ExpectedConditions.elementToBeClickable(jobsButton)).click();
-        return new FiltersPage(driver);
-    }
+
 }
