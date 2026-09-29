@@ -1,23 +1,20 @@
 package staffAmTest.filtersPageTest;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import staffAm.businessPage.JobAnnouncement;
 import staffAm.staffAmFilters.FiltersGroupName;
 import staffAm.staffAmFilters.FiltersPage;
 import staffAm.staffAmFilters.HomepageNew;
 import staffAmTest.BaseTest;
+import staffAmTest.utils.RetryAnalyzer;
+import staffAmTest.utils.TestListener;
 
-import java.util.List;
-
+@Listeners(TestListener.class)
 public class FiltersPageTest extends BaseTest {
     private FiltersPage filtersPage;
 
-    @Test(dataProvider = "JobsFiltersData", dataProviderClass = FiltersPage.class)
+    @Test(dataProvider = "JobsFiltersData", dataProviderClass = FiltersPage.class, retryAnalyzer = RetryAnalyzer.class)
     public void testCategoryFilterClick(FiltersGroupName filterGroup, String filterName) {
         HomepageNew homepage = new HomepageNew(driver);
         homepage.acceptCookies();

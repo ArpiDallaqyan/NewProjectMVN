@@ -3,7 +3,9 @@ package staffAm.staffAmFilters;
 public enum FiltersGroupName {
     JOB_CATEGORY("Job category", "Category:"),
     SPECIALIST_LEVEL("Specialist level", "Required candidate level"),
-    JOB_TERMS("Job terms", "Employment term:");
+    JOB_TERMS("Job terms", "Employment term:"),
+    BY_CITIES("By cities",null),
+    JOB_TYPES("Job types", null);
 
     private final String nameInJobsPage;
     private final String nameInJobsDetailsPage;

@@ -3,12 +3,10 @@ package staffAm.staffAmFilters;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.DataProvider;
 import staffAm.BasePage;
 import staffAm.businessPage.JobAnnouncement;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +25,7 @@ public class FiltersPage extends BasePage {
     String jobDetailsFiltersLocText = "//div[normalize-space()='%s']/following-sibling::*[1]";
     String viewMoreDynamicLocText = "//div[text()='%s']/following-sibling::div[@tabindex='0']";
     String categorySiblingsLocText = "//div[text()='%s']/following-sibling::div[not(@tabindex='0')]//span[text()='%s']//span";
+    String jobTypesByCitiesLocText = "//*[not(@tabindex='0') and normalize-space(text())='%s']";
 
 
     public FiltersPage(WebDriver driver) {
@@ -80,8 +79,8 @@ public class FiltersPage extends BasePage {
         return this;
     }
 
-    public String getJobDetailValueText(FiltersGroupName filterGroup) {
-        By locator = getJobDetailsFilterLocator(filterGroup);
+    public String getJobDetailValueText(FiltersGroupName filterGroup, String expectedFilterValue) {
+        By locator = getJobDetailsFilterLocator(filterGroup, expectedFilterValue);
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
         new Actions(driver).scrollToElement(element).perform();
         wait.until(ExpectedConditions.visibilityOf(element));
@@ -89,14 +88,23 @@ public class FiltersPage extends BasePage {
     }
 
     public boolean isFilterCorrectInJobDetails(FiltersGroupName filterGroup, String expectedFilterValue) {
-        String actualDetailText = getJobDetailValueText(filterGroup);
+        String actualDetailText = getJobDetailValueText(filterGroup, expectedFilterValue);
         return actualDetailText.toLowerCase().contains(expectedFilterValue.toLowerCase());
     }
 
-    private By getJobDetailsFilterLocator(FiltersGroupName filterGroup) {
-        String label = filterGroup.getNameInJobsDetailsPage();
-        String xpath = String.format(jobDetailsFiltersLocText, label);
-        return By.xpath(xpath);
+
+    private By getJobDetailsFilterLocator(FiltersGroupName filterGroup, String expectedFilterValue) {
+        switch (filterGroup) {
+            case JOB_TYPES:
+            case BY_CITIES:
+                return By.xpath(String.format(jobTypesByCitiesLocText, expectedFilterValue));
+            case JOB_CATEGORY:
+            case SPECIALIST_LEVEL:
+            case JOB_TERMS:
+            default:
+                String label = filterGroup.getNameInJobsDetailsPage();
+                return By.xpath(String.format(jobDetailsFiltersLocText, label));
+        }
     }
 
     public FiltersPage selectFilterItem(String categoryHeadName, String categoryFilter) {
@@ -110,7 +118,9 @@ public class FiltersPage extends BasePage {
         return new Object[][]{
                 {FiltersGroupName.JOB_CATEGORY, "Legal"},
                 {FiltersGroupName.SPECIALIST_LEVEL, "Student"},
-                {FiltersGroupName.JOB_TERMS, "Freelance"}
+                {FiltersGroupName.JOB_TERMS, "Freelance"},
+                {FiltersGroupName.BY_CITIES, "Kapan"},
+                {FiltersGroupName.JOB_TYPES, "Part time"}
         };
     }
 
