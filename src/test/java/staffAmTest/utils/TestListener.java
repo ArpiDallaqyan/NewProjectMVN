@@ -1,5 +1,6 @@
 package staffAmTest.utils;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -7,6 +8,7 @@ import org.testng.ITestResult;
 import staffAmTest.BaseTest;
 
 public class TestListener implements ITestListener {
+
     @Override
     public void onTestStart(ITestResult result) {
         System.out.println("Test Started: " + result.getName());
@@ -24,9 +26,10 @@ public class TestListener implements ITestListener {
 
         if (driver != null) {
             ScreenshotUtils.takeScreenshot(driver, result.getName());
+            ScreenshotUtils.attachScreenshotToAllure(driver);
+
         }
     }
-
 
     @Override
     public void onStart(ITestContext context) {

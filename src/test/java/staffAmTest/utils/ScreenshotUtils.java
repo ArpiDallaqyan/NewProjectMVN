@@ -1,5 +1,6 @@
 package staffAmTest.utils;
 
+import io.qameta.allure.Attachment;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -17,6 +18,9 @@ public class ScreenshotUtils {
         String fileName = testName + "_" + timestamp + ".png";
         String directoryPath = "target/screenshots/";
         File folder = new File(directoryPath);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
         File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         File destFile = new File(directoryPath + fileName);
 
@@ -26,5 +30,11 @@ public class ScreenshotUtils {
         } catch (IOException e) {
             System.out.println("Failed to save screenshot: " + e.getMessage());
         }
+    }
+
+    @Attachment(value = "Screenshot", type = "image/png")
+    public static byte[] attachScreenshotToAllure(WebDriver driver) {
+        return ((TakesScreenshot) driver)
+                .getScreenshotAs(OutputType.BYTES);
     }
 }

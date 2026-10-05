@@ -1,5 +1,6 @@
 package staffAm;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -21,6 +22,7 @@ public abstract class BasePage {
     @FindBy(xpath = "//div[text()='Jobs']")
     private WebElement jobsButton;
 
+    @Step("Click Jobs Button")
     public FiltersPage clickJobsButton() {
         wait.until(ExpectedConditions.elementToBeClickable(jobsButton)).click();
         return new FiltersPage(driver);
@@ -33,6 +35,7 @@ public abstract class BasePage {
         PageFactory.initElements(driver, this);
     }
 
+    @Step("Accept Cookies")
     public void acceptCookies() {
         try {
             shortWait.until(ExpectedConditions.elementToBeClickable(cookieAcceptButton)).click();

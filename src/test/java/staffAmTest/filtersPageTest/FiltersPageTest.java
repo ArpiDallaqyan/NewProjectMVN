@@ -1,5 +1,7 @@
 package staffAmTest.filtersPageTest;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.testng.AllureTestNg;
 import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -14,6 +16,7 @@ import staffAmTest.utils.TestListener;
 public class FiltersPageTest extends BaseTest {
     private FiltersPage filtersPage;
 
+    @Description("Verify that user can filter jobs by category")
     @Test(dataProvider = "JobsFiltersData", dataProviderClass = FiltersPage.class, retryAnalyzer = RetryAnalyzer.class)
     public void testCategoryFilterClick(FiltersGroupName filterGroup, String filterName) {
         HomepageNew homepage = new HomepageNew(driver);

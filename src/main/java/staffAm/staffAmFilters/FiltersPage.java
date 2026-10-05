@@ -1,5 +1,6 @@
 package staffAm.staffAmFilters;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -37,6 +38,7 @@ public class FiltersPage extends BasePage {
         return By.xpath(xpath);
     }
 
+    @Step("Click To Element")
     public void clickToElement(By locator) {
         WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
         new Actions(driver).scrollToElement(element).perform();
@@ -48,6 +50,7 @@ public class FiltersPage extends BasePage {
         return By.xpath(xpath);
     }
 
+    @Step("Click View More If Exist")
     public FiltersPage clickViewMoreIfExists(String sectionHeader) {
         By viewMoreLoc = getViewMoreLocator(sectionHeader);
         try {
@@ -59,6 +62,7 @@ public class FiltersPage extends BasePage {
         return this;
     }
 
+    @Step("Click First Job")
     public FiltersPage clickFirstJob() {
         wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(jobsTitles));
         List<WebElement> jobs = driver.findElements(jobsTitles);
@@ -79,6 +83,7 @@ public class FiltersPage extends BasePage {
         return this;
     }
 
+    @Step("Get Job Details Value Text")
     public String getJobDetailValueText(FiltersGroupName filterGroup, String expectedFilterValue) {
         By locator = getJobDetailsFilterLocator(filterGroup, expectedFilterValue);
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
@@ -87,11 +92,11 @@ public class FiltersPage extends BasePage {
         return element.getText().trim();
     }
 
+    @Step("Filter Is Correct In Job Details Page")
     public boolean isFilterCorrectInJobDetails(FiltersGroupName filterGroup, String expectedFilterValue) {
         String actualDetailText = getJobDetailValueText(filterGroup, expectedFilterValue);
         return actualDetailText.toLowerCase().contains(expectedFilterValue.toLowerCase());
     }
-
 
     private By getJobDetailsFilterLocator(FiltersGroupName filterGroup, String expectedFilterValue) {
         switch (filterGroup) {
@@ -107,12 +112,14 @@ public class FiltersPage extends BasePage {
         }
     }
 
+    @Step("Select Filter Item")
     public FiltersPage selectFilterItem(String categoryHeadName, String categoryFilter) {
         By filterLoc = getCategorySiblingsLocator(categoryHeadName, categoryFilter);
         clickToElement(filterLoc);
         return this;
     }
 
+    @Step("Get Category Filter Data")
     @DataProvider(name = "JobsFiltersData")
     public static Object[][] getCategoryFilterData() {
         return new Object[][]{
@@ -124,6 +131,7 @@ public class FiltersPage extends BasePage {
         };
     }
 
+    @Step("No Jobs Message Is Displayed When Empty")
     public boolean isNoJobsMessageDisplayedWhenEmpty() {
         try {
             return shortWait.until(ExpectedConditions.visibilityOfElementLocated(noJobsMessage)).isDisplayed();
@@ -132,6 +140,7 @@ public class FiltersPage extends BasePage {
         }
     }
 
+    @Step("Wait For Jobs To Refresh")
     public FiltersPage waitForJobsToRefresh() {
         wait.until(ExpectedConditions.refreshed(
                 ExpectedConditions.visibilityOfAllElementsLocatedBy(jobsTitles)
