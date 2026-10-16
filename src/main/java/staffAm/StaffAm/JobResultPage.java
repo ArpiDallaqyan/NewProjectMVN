@@ -3,12 +3,9 @@ package staffAm.StaffAm;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import staffAm.BaseClass;
+import staffAm.BasePage;
 
-import java.time.Duration;
-
-public class JobResultPage extends BaseClass {
+public class JobResultPage extends BasePage {
     private By clearFiltersIcon = By.xpath("//img[@alt='close-icon']");
 
     public JobResultPage(WebDriver driver) {

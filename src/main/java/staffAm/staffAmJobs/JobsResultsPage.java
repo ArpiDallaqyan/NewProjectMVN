@@ -3,16 +3,14 @@ package staffAm.staffAmJobs;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import staffAm.BaseClass;
+import staffAm.BasePage;
 import staffAm.businessPage.JobAnnouncement;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 
 
-public class JobsResultsPage extends BaseClass {
+public class JobsResultsPage extends BasePage {
     private By cookieAcceptButton = (By.xpath("//div[contains(text(), 'We use cookies')]"));
     private By jobs = By.xpath("//img[@alt='left-icon']/ancestor::div[3]");
     private By location = By.xpath("//img[contains(@src, 'location')]/following::div[@dir='auto'][1]");
@@ -46,7 +44,6 @@ public class JobsResultsPage extends BaseClass {
     public String getLocation(){
         return (wait.until(ExpectedConditions.visibilityOfElementLocated(location))
                 .getAttribute("textContent"));
-
     }
     public String getDate(){
         return (wait.until(ExpectedConditions.visibilityOfElementLocated(date))
