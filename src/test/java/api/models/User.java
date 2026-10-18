@@ -1,7 +1,7 @@
 package api.models;
 
 public class User {
-    private int id;
+    private Long id;
     private String name;
     private String email;
     private String gender;
@@ -10,11 +10,18 @@ public class User {
     public User() {
     }
 
-    public int getId() {
+    public User(String name, String email, String gender, String status) {
+        this.name = name;
+        this.email = email;
+        this.gender = gender;
+        this.status = status;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
