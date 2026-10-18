@@ -95,7 +95,8 @@ public class ApiPostsTest {
                 "Mismatch in post's text bodies");
 
         User user2 = new User("Mark", "mark" + unique + "@gmail.com", "male", "active");
-        User createdUser2 = RestAssured.given()
+        User createdUser2 = RestAssured
+                .given()
                 .contentType(ContentType.JSON)
                 .body(user2)
                 .when()
@@ -109,7 +110,8 @@ public class ApiPostsTest {
         Post user2Post1 = new Post("User2 Post1", "Second user's first post", userId2);
         Post user2Post2 = new Post("User2 Post2", "Second user's second post", userId2);
 
-        Post createdPost1 = RestAssured.given()
+        Post createdPost1 = RestAssured
+                .given()
                 .contentType(ContentType.JSON)
                 .body(user2Post1)
                 .when()
