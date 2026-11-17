@@ -42,7 +42,7 @@ public class ApiUsersTest {
                 .body(newUser)
                 .post("/users").jsonPath().getObject("data", User.class);
 
-        int createdUserId = postResponse.getId();
+        Long createdUserId = postResponse.getId();
         System.out.println("Created user ID: " + createdUserId);
         Response response = RestAssured.given().get("/users/" + createdUserId );
         System.out.println(response.then().log().body().statusCode(200));
